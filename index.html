@@ -234,6 +234,48 @@
 </head>
 <body>
 <div class="screen" id="app">
+  <!-- ÉCRAN VÉRIFICATION ÂGE -->
+  <div id="screen-age" style="display:flex; flex-direction:column; flex:1;">
+    <div class="header">
+      <div class="header-label">Grand Jeu</div>
+      <div class="header-title">Votre <span>chance</span><br>vous attend</div>
+    </div>
+
+    <div class="content" style="display:flex; flex-direction:column; justify-content:center; flex:1;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:40px; margin-bottom:16px;">🎂</div>
+        <div class="card-title" style="margin-bottom:8px;">Vérification de l'âge</div>
+        <div class="card-sub" style="margin-bottom:20px;">Entrez votre date de naissance pour continuer</div>
+        <div class="input-group" style="text-align:left;">
+          <label class="input-label" for="dob">Date de naissance</label>
+          <input type="date" id="dob" style="width:100%;background:#f8f5f0;border:1px solid #e0d8cc;border-radius:10px;padding:13px 14px;font-size:14px;color:#1a1a1a;font-family:'DM Sans',sans-serif;outline:none;" />
+        </div>
+        <div class="error-msg" id="age-error" style="display:none; margin-bottom:12px;">Veuillez entrer une date valide.</div>
+        <button class="btn btn-gold" onclick="verifierAge()">Continuer</button>
+      </div>
+    </div>
+
+    <div class="legal">
+      Jeu réservé aux <span>+18 ans</span><br>
+      Lot à récupérer sous <span>3 jours</span> au comptoir dédié
+    </div>
+  </div>
+
+  <!-- ÉCRAN MINEUR -->
+  <div id="screen-mineur" style="display:none; flex-direction:column; flex:1;">
+    <div class="header">
+      <div class="header-label">Grand Jeu</div>
+      <div class="header-title">Votre <span>chance</span><br>vous attend</div>
+    </div>
+
+    <div class="content" style="display:flex; flex-direction:column; justify-content:center; flex:1;">
+      <div class="card" style="text-align:center;">
+        <div style="font-size:40px; margin-bottom:16px;">🚫</div>
+        <div class="card-title" style="margin-bottom:8px;">Accès refusé</div>
+        <div class="card-sub">Désolé, ce jeu est réservé aux personnes de 18 ans et plus. Merci de votre compréhension.</div>
+      </div>
+    </div>
+  </div>
 
   <!-- ÉCRAN PARTICIPATION -->
   <div id="screen-form" style="display:flex; flex-direction:column; flex:1;">
@@ -311,11 +353,36 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   function show(id) {
-    ['screen-form','screen-loading','screen-winner','screen-loser'].forEach(s => {
+    ['screen-age','screen-form','screen-loading','screen-winner','screen-loser','screen-mineur'].forEach(s => {
       const el = document.getElementById(s);
-      el.style.display = 'none';
+      if (el) el.style.display = 'none';
     });
     document.getElementById(id).style.display = 'flex';
+  }
+
+  function verifierAge() {
+    const dob = document.getElementById('dob').value;
+    const ageError = document.getElementById('age-error');
+
+    if (!dob) {
+      ageError.textContent = 'Veuillez entrer une date valide.';
+      ageError.style.display = 'block';
+      return;
+    }
+
+    const naissance = new Date(dob);
+    const aujourdhui = new Date();
+    let age = aujourdhui.getFullYear() - naissance.getFullYear();
+    const mois = aujourdhui.getMonth() - naissance.getMonth();
+    if (mois < 0 || (mois === 0 && aujourdhui.getDate() < naissance.getDate())) {
+      age--;
+    }
+
+    if (age < 18) {
+      show('screen-mineur');
+    } else {
+      show('screen-form');
+    }
   }
 
   async function verifierIP() {
