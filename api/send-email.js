@@ -1,10 +1,10 @@
-exports.handler = async (event) => {
-  const { email, lot } = JSON.parse(event.body);
+export default async function handler(req, res) {
+  const { email, lot } = req.body;
 
-  const res = await fetch('https://api.resend.com/emails', {
+  const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
-      'Authorization': 'Bearer re_dNhyJLid_6RwkpmPMUVBcCEZpiwEhZniV', // remplace
+      'Authorization': 'Bearer TA_CLE_RESEND', // remplace
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -23,9 +23,6 @@ exports.handler = async (event) => {
     })
   });
 
-  const data = await res.json();
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data)
-  };
-};
+  const data = await response.json();
+  res.status(200).json(data);
+}

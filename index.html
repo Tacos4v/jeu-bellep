@@ -360,17 +360,10 @@
     }, { onConflict: 'ip' });
   }
 
-  async function envoyerEmail(email, lot) {
-    await fetch('/.netlify/functions/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, lot })
-    });
-  }
 
   async function envoyerEmail(email, lot) {
     console.log('envoi email à', email, 'pour lot', lot);
-    const res = await fetch('/.netlify/functions/send-email', {
+    const res = await fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, lot })
