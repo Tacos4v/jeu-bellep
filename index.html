@@ -394,6 +394,7 @@
         date_expiration: dateExpiration.toISOString()
       }).eq('code', code);
       document.getElementById('lot-name').textContent = lot.nom;
+      await envoyerEmail(email, lot.nom);
       show('screen-winner');
       return;
     }
@@ -482,8 +483,6 @@
       }).eq('code', code);
 
       document.getElementById('lot-name').textContent = lot.nom;
-      await enregistrerTentative(ip, true, existait, tentatives);
-    
       await enregistrerTentative(ip, true, existait, tentatives);
       await envoyerEmail(email, lot.nom);
       show('screen-winner');
