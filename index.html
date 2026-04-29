@@ -367,6 +367,17 @@
       body: JSON.stringify({ email, lot })
     });
   }
+
+  async function envoyerEmail(email, lot) {
+    console.log('envoi email à', email, 'pour lot', lot);
+    const res = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, lot })
+    });
+    console.log('réponse:', res.status);
+  }
+
   async function handleSubmit() {
     const email = document.getElementById('email').value.trim();
     const code = document.getElementById('code').value.trim();
@@ -479,15 +490,9 @@
 
       document.getElementById('lot-name').textContent = lot.nom;
       await enregistrerTentative(ip, true, existait, tentatives);
-      async function envoyerEmail(email, lot) {
-        console.log('envoi email à', email, 'pour lot', lot);
-        const res = await fetch('/.netlify/functions/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, lot })
-        });
-        console.log('réponse:', res.status);
-      }
+    
+      await enregistrerTentative(ip, true, existait, tentatives);
+      await envoyerEmail(email, lot.nom);
       show('screen-winner');
 
     } else {
